@@ -1,41 +1,57 @@
 import sys
+import json
+import os
+
+saveFile = "passwords.json"
+
+def loadPasswords():
+    if os.path.exists(saveFile):
+        with open(saveFile, "r") as file:
+            return json.load(file)
+    return {}
+
+pwDict = loadPasswords()
+
+def savePasswords():
+    with open(saveFile, "w") as file:
+        json.dump(pwDict, file, indent=4)
 
 def mainMenu():
-    print("Welcome to the password bank, select from following options: ")
-    print("\n1) Add website + password \n2) Remove website + password")
-    print("3) Search for password by website name (requires PIN)")
-    choice = int(input())
-    if(choice == 1):
-        createPasswordObject()
-    elif(choice == 2):
-        removePasswordObject()
-    elif (choice == 3):
-        searchPasswordObject()
-    else:
-        print("Please choose options again.")
-        sys.exit()
+    choice = 2
+    while(choice != 1):
+        print("\nWelcome to the password bank, select from following options: ")
+        print("\n1) exit program \n2) Add website + password ")
+        print("3) Remove website + password \n4) Show all passwords")
+        choice = int(input())
+        if(choice == 2):
+            createPasswords()
+        elif(choice == 3):
+            removePasswords()
+        elif (choice == 4):
+            showAllPasswords()
 
-def createPasswordObject():
+def createPasswords():
     website = input("Enter website where its stored: ")
     password = input("Enter the password for the website: ")
     addToDictionary(website, password)
-
-def removePasswordObject():
-    print("option2")
-    
-def searchPasswordObject():
-    print("option3")
+    savePasswords()
+    print("\nSuccessfully added information.")
 
 def addToDictionary(ws, pw):
-    pwDict ={}
     pwDict[ws] = pw
+
+def removePasswords():
+    print("Please type the website you wish to remove")
+    removeTarget = input()
+    if removeTarget in pwDict:
+        del pwDict[removeTarget]
+        savePasswords()
+        print(f"\nSuccessfully removed {removeTarget}.")
+    else:
+        print(f"\n{removeTarget} was not found in the password bank.")
+
+def showAllPasswords():
     print(pwDict)
 
-class banked_pw:
-    def __init__(self, website, pw):
-        self.website = website
-        self.pw = pw
-        
 if __name__ == "__main__":
-    mainMenu()
-    
+    mainMenu()  
